@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose  = require('mongoose');
 const app = express();
+const session = require('express-session');
 //DATABASE CONFIGURATION=============================
 mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
@@ -20,12 +21,20 @@ db.on('disconnected', () => console.log('mongo disconnected'));
 
 //MIDDLEWARE=========================================
 app.use(express.urlencoded({ extended: true }));
-
+app.use(
+    session({
+        secret: process.env.SECRET,
+        resave: false,
+        saveUninitialized: false
+    }));
 
 //ROUTES/CONTROLLERS=================================
 //this allows us to drop the /users from all of our routes in the controller module. (users.js)
 const userController = require('./controllers/users');
 app.use('/users', userController);
+
+const sessionsController = require('./controllers/sessions');
+app.use('/sessions', sessionsController);
 
 //LISTENER============================================
 const PORT = process.env.PORT;
