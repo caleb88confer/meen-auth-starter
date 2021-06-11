@@ -5,7 +5,11 @@ const sessionsRouter = express.Router();
 const User = require('../models/user.js');
 
 // New (login page)
-
+sessionsRouter.get('/new', (req, res) => {
+    res.render('sessions/new.ejs', {
+        currentUser: req.session.currentUser
+    });
+});
 
 // Delete (logout route)
 sessionsRouter.delete('/', (req, res) => {
@@ -31,6 +35,7 @@ sessionsRouter.post('/', (req, res) => {
             // if the passwords match
             if (passwordMatches) {
                 // add the user to our session
+                // req.session creates the cookie
                 req.session.currentUser = foundUser;
 
                 // redirect back to our home page
